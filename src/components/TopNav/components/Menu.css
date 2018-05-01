@@ -1,0 +1,4 @@
+.nav--open {
+  transform: translateX(0) !important;
+  transition: .5s;
+}
