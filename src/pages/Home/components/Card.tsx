@@ -13,6 +13,7 @@ interface ICardClasses {
 interface ICardProps {
   key: number,
   item: HomeItem,
+  action: (e: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
 const decorate = withStyles(({ }) => ({
@@ -23,7 +24,7 @@ const decorate = withStyles(({ }) => ({
   },
 }))
 
-const Card: React.SFC<ICardProps & { classes: ICardClasses }> = ({ key, classes, item, }) => (
+const Card: React.SFC<ICardProps & { classes: ICardClasses }> = ({ key, classes, item, action }) => (
   <MuiCard key={key} className={classes.card}>
     <CardContent>
       <Typography color="textSecondary">
@@ -35,7 +36,7 @@ const Card: React.SFC<ICardProps & { classes: ICardClasses }> = ({ key, classes,
     </CardContent>
     <Divider />
     <CardActions>
-      <Button color="primary" size="small">Ver</Button>
+      <Button color="primary" size="small" onClick={action}>Ver</Button>
     </CardActions>
   </MuiCard>
 )
