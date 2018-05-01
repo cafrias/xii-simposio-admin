@@ -16,6 +16,7 @@ interface IMenuItemProps {
   key: number,
   type: string,
   item: IMenuItem,
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
 interface ITextProps {
@@ -30,8 +31,8 @@ const TextPrimary = ({ label, }: ITextProps) => (
   <ListItemText inset={true} primary={label} />
 )
 
-const MenuItem = ({ key, type, item }: IMenuItemProps) => (
-  <MuiMenuItem key={key}>
+const MenuItem = ({ key, type, item, onClick }: IMenuItemProps) => (
+  <MuiMenuItem key={key} onClick={onClick}>
     <ListItemIcon>
       <item.icon />
     </ListItemIcon>

@@ -8,6 +8,9 @@ import { MenuList, MenuItem as MuiMenuItem } from 'material-ui/Menu'
 import { ListItemText } from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 
+import * as Router from 'react-router'
+import * as H from 'history'
+
 import items from './items'
 
 import MenuItem from './MenuItem'
@@ -18,28 +21,38 @@ interface IMenuProps {
   menuOpen: boolean,
 }
 
+type MenuProps = IMenuProps & Router.RouteComponentProps<IMenuProps>
+
 interface IMenuStyle {
   classes: {
     nav: string,
   }
 }
 
-type IMenuStyled = IMenuProps & IMenuStyle
+type IMenuStyled = MenuProps & IMenuStyle
 
-const Menu = ({ menuOpen, classes, }: IMenuStyled) => (
+const clickHandler = (to: string, history: H.History) =>
+  () => history.push(to)
+
+const Menu = ({ menuOpen, classes, history }: IMenuStyled) => (
   <Paper component="nav" className={`${classes.nav} ${menuOpen ? 'nav--open' : ''}`}>
     <MenuList>
-      <MenuItem type="primary" key={0} item={items.inicio} />
+      <MenuItem type="primary" key={0} item={items.inicio} onClick={clickHandler('/', history)} />
       <Divider />
       <MuiMenuItem>
         <ListItemText primary="Listado de Subscripciones" />
       </MuiMenuItem>
       {
-        items.listados.map((item, key) => <MenuItem type="secondary" key={key} item={item} />)
+        items.listados.map(
+          (item, key) =>
+            <MenuItem type="secondary" key={key} item={item} onClick={clickHandler(item.href, history)} />
+        )
       }
       <Divider />
       {
-        items.subscripcion.map((item, key) => <MenuItem type="primary" key={key} item={item} />)
+        items.subscripcion.map(
+          (item, key) => <MenuItem type="primary" key={key} item={item} onClick={clickHandler(item.href, history)} />
+        )
       }
     </MenuList>
   </Paper>
@@ -64,4 +77,4 @@ const decorate = withStyles(({ }) => ({
   },
 }))
 
-export default decorate<IMenuProps>(Menu)
+export default Router.withRouter<MenuProps>(decorate<MenuProps>(Menu))
