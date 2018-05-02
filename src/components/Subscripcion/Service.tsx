@@ -24,19 +24,21 @@ const del: Delete = async (doc) => {
 // HOC
 
 export interface IService {
-  subscripcion: {
-    delete: Delete,
-    confirmar: Confirmar,
-  },
+  delete: Delete,
+  confirmar: Confirmar,
 }
 
-export const withSubscripcion = <P extends IService>(Comp: React.ComponentType<P>) =>
+export interface IWithService {
+  subsServ: IService,
+}
+
+export const withSubscripcion = <P extends IWithService>(Comp: React.ComponentType<P>) =>
   class WithSubscripcion extends React.Component<P> {
     public render() {
       return (
         <Comp
           {...this.props}
-          subscripcion={{
+          subsServ={{
             delete: del,
             confirmar,
           }}

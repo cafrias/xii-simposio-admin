@@ -1,18 +1,23 @@
 import * as React from 'react'
 
 import * as SubsEnt from '../../entities/Subscripcion'
+import * as SubsServ from '../../components/Subscripcion/Service'
 
 import ListSubs from '../../components/Subscripcion/List/List'
 import Layout from '../../components/Layout/Layout'
 
+import SubsModal from './components/SubsModal'
+
+type Props = {} & SubsServ.IWithService
+
 interface IState {
   results: SubsEnt.ISubscripcion[],
   modalOpen: boolean,
-  modalData: SubsEnt.ISubscripcion | undefined,
+  modalData: SubsEnt.ISubscripcion,
 }
 
-class List extends React.Component<{}, IState> {
-  constructor(props: {}) {
+class List extends React.Component<Props, IState> {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -21,18 +26,29 @@ class List extends React.Component<{}, IState> {
         Object.assign({}, SubsEnt.FixSubscripcion, { documento: 123456789 }),
       ],
       modalOpen: false,
-      modalData: undefined,
+      modalData: SubsEnt.EmptySubscripcion,
     }
 
     this.openModal = this.openModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   public render() {
+    const {
+      results,
+      modalData,
+      modalOpen,
+    } = this.state
     return (
       <section className="container list-container">
-        <ListSubs results={this.state.results} rowClickHandler={this.openModal} />
+        <ListSubs results={results} rowClickHandler={this.openModal} />
         {
-
+          <SubsModal
+            subscripcion={modalData}
+            open={modalOpen}
+            onClose={this.closeModal}
+            subsServ={this.props.subsServ}
+          />
         }
       </section>
     )
@@ -44,6 +60,12 @@ class List extends React.Component<{}, IState> {
       modalData: SubsEnt.FixSubscripcion,
     }))
   }
+
+  private closeModal() {
+    this.setState(Object.assign({}, this.state, {
+      modalOpen: false,
+    }))
+  }
 }
 
-export default (props: {}) => <Layout render={<List {...props} />} />
+export default SubsServ.withSubscripcion<Props>((props: Props) => <Layout render={<List {...props} />} />)

@@ -5,7 +5,6 @@ import * as SubsServ from '../Service'
 
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
-import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
 
 import Delete from '@material-ui/icons/Delete'
@@ -20,8 +19,7 @@ import WarningDialog from './components/WarningDialog'
 
 interface IProps {
   s: Subscripcion.ISubscripcion,
-  deleteSubs: SubsServ.Delete,
-  confirmarSubs: SubsServ.Confirmar,
+  subsServ: SubsServ.IService,
 }
 
 type StyledProps = IProps & {
@@ -50,34 +48,32 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
   }
 
   public render() {
-    const { s, classes, } = this.props
+    const { s, classes, subsServ } = this.props
     const { open, } = this.state
     return (
       <>
-        <Paper component="article" className={classes.paper}>
-          <Grid container={true} item={true} spacing={24} xs={12}>
-            <Grid item={true} xs={12} lg={3}>
-              <Personales s={s} classes={classes} />
-            </Grid>
-            <Grid item={true} xs={12} lg={3}>
-              <Contacto s={s} classes={classes} />
-            </Grid>
-            <Grid item={true} xs={12} lg={3}>
-              <Pago s={s} classes={classes} confirmar={this.props.confirmarSubs} />
-            </Grid>
-            <Grid item={true} xs={12} lg={3}>
-              <Ponencia s={s} classes={classes} />
-            </Grid>
+        <Grid container={true} spacing={24} xs={12}>
+          <Grid item={true} xs={12} lg={3}>
+            <Personales s={s} classes={classes} />
           </Grid>
-          <Grid container={true} item={true} spacing={16} xs={12} justify="flex-end">
-            <Grid item={true}>
-              <Button variant="raised" color="secondary" onClick={this.handleOpen}>
-                Eliminar
+          <Grid item={true} xs={12} lg={3}>
+            <Contacto s={s} classes={classes} />
+          </Grid>
+          <Grid item={true} xs={12} lg={3}>
+            <Pago s={s} classes={classes} confirmar={subsServ.confirmar} />
+          </Grid>
+          <Grid item={true} xs={12} lg={3}>
+            <Ponencia s={s} classes={classes} />
+          </Grid>
+        </Grid>
+        <Grid container={true} item={true} spacing={16} xs={12} justify="flex-end">
+          <Grid item={true}>
+            <Button variant="raised" color="secondary" onClick={this.handleOpen}>
+              Eliminar
                 <Delete className={classes.rightIcon} />
-              </Button>
-            </Grid>
+            </Button>
           </Grid>
-        </Paper>
+        </Grid>
         <WarningDialog open={open}
           handleDismiss={this.handleClose}
           handleOK={this.handleOK}
@@ -99,7 +95,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
   }
 
   private handleOK() {
-    this.props.deleteSubs(this.props.s.documento)
+    this.props.subsServ.delete(this.props.s.documento)
     this.handleClose()
   }
 }
@@ -108,11 +104,6 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
 // STYLES
 
 const decorate = withStyles(({ }) => ({
-  paper: {
-    marginTop: '1.125rem',
-    padding: '1.125rem',
-    minWidth: '85%',
-  },
   dataList: {
     borderLeft: '2px solid #EEEEEE',
   },

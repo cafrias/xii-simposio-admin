@@ -2,14 +2,14 @@ import * as React from 'react'
 import './Search.css'
 
 import * as Subscripcion from '../../entities/Subscripcion'
-import SubsShow from '../../components/Subscripcion/Show/Show'
-
 import * as SubsServ from '../../components/Subscripcion/Service'
 
 import Layout from '../../components/Layout/Layout'
-import Form from './components/Form'
 
-type PropsWithSubs = {} & SubsServ.IService
+import Form from './components/Form'
+import Result from './components/Result'
+
+type Props = {} & SubsServ.IWithService
 
 interface IState {
   result: Subscripcion.ISubscripcion | undefined,
@@ -18,8 +18,8 @@ interface IState {
   loading: boolean,
 }
 
-class Search extends React.Component<PropsWithSubs, IState> {
-  constructor(props: PropsWithSubs) {
+class Search extends React.Component<Props, IState> {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -51,11 +51,7 @@ class Search extends React.Component<PropsWithSubs, IState> {
         />
         {
           result ? (
-            <SubsShow
-              s={result}
-              confirmarSubs={this.props.subscripcion.confirmar}
-              deleteSubs={this.props.subscripcion.delete}
-            />
+            <Result result={result} subsServ={this.props.subsServ} />
           ) : null
         }
       </section>
@@ -78,6 +74,6 @@ class Search extends React.Component<PropsWithSubs, IState> {
   }
 }
 
-export default SubsServ.withSubscripcion<PropsWithSubs>(
-  (props: PropsWithSubs) => <Layout render={<Search {...props} />} />
+export default SubsServ.withSubscripcion<Props>(
+  (props: Props) => <Layout render={<Search {...props} />} />
 )
