@@ -53,7 +53,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
     const { s, classes, } = this.props
     const { open, } = this.state
     return (
-      <Grid item={true} xs={12}>
+      <>
         <Paper component="article" className={classes.paper}>
           <Grid container={true} item={true} spacing={24} xs={12}>
             <Grid item={true} xs={12} lg={3}>
@@ -82,7 +82,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
           handleDismiss={this.handleClose}
           handleOK={this.handleOK}
         />
-      </Grid>
+      </>
     )
   }
 
@@ -111,7 +111,7 @@ const decorate = withStyles(({ }) => ({
   paper: {
     marginTop: '1.125rem',
     padding: '1.125rem',
-    width: '100%',
+    minWidth: '85%',
   },
   dataList: {
     borderLeft: '2px solid #EEEEEE',

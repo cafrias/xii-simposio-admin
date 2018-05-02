@@ -55,12 +55,12 @@ const Pago = ({ s, classes, confirmar, }: IProps) => {
           <ListItemText primary={categoria} secondary="Categoría" />
         </ListItem>
         <ListItem>
-          <ListItemText primary={base} secondary="Base" />
+          <ListItemText primary={`$${base}`} secondary="Base" />
         </ListItem>
         {
           s.arancel_adicional ? (
             <ListItem>
-              <ListItemText primary={s.arancel_adicional} secondary="Adicional" />
+              <ListItemText primary={`$${s.arancel_adicional}`} secondary="Adicional" />
             </ListItem>
           ) : null
         }
