@@ -2,13 +2,14 @@ import * as React from 'react'
 import './Search.css'
 
 import * as Subscripcion from '../../entities/Subscripcion'
+import SubsShow from '../../components/Subscripcion/Show/Show'
+
+import * as SubsServ from '../../components/Subscripcion/Service'
 
 import Layout from '../../components/Layout/Layout'
 import Form from './components/Form'
 
-interface IProps {
-  some: any
-}
+type PropsWithSubs = {} & SubsServ.IService
 
 interface IState {
   result: Subscripcion.ISubscripcion | undefined,
@@ -17,12 +18,12 @@ interface IState {
   loading: boolean,
 }
 
-class Search extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
+class Search extends React.Component<PropsWithSubs, IState> {
+  constructor(props: PropsWithSubs) {
     super(props)
 
     this.state = {
-      result: undefined,
+      result: Subscripcion.FixSubscripcion,
       query: '',
       error: false,
       loading: false,
@@ -36,6 +37,7 @@ class Search extends React.Component<IProps, IState> {
       query,
       error,
       loading,
+      result
     } = this.state
 
     return (
@@ -47,6 +49,15 @@ class Search extends React.Component<IProps, IState> {
           onChange={this.handleInput}
           onSubmit={this.handleSubmit}
         />
+        {
+          result ? (
+            <SubsShow
+              s={result}
+              confirmarSubs={this.props.subscripcion.confirmar}
+              deleteSubs={this.props.subscripcion.delete}
+            />
+          ) : null
+        }
       </section>
     )
   }
@@ -67,4 +78,6 @@ class Search extends React.Component<IProps, IState> {
   }
 }
 
-export default (props: IProps) => <Layout render={<Search {...props} />} />
+export default SubsServ.withSubscripcion<PropsWithSubs>(
+  (props: PropsWithSubs) => <Layout render={<Search {...props} />} />
+)

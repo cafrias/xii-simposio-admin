@@ -45,3 +45,28 @@ export const EmptySubscripcion = {
   acompanantes: 0,
   confirmado: false,
 }
+
+// Used for development and debugging purpose
+export const FixSubscripcion: ISubscripcion = {
+  documento: 13415121,
+  apellido: 'Frias',
+  nombre: 'Carlos',
+  telefono: 0,
+  celular: 2651134687,
+  fax: 1234,
+  email: 'carlos.a.frias@gmail.com',
+  direccion: 'Mi Casa 123456',
+  zip: 9456,
+  localidad: 'Rio Grande, Tierra del Fuego',
+  pais: 'Argentina',
+  arancel_adicional: 0,
+  arancel_categoria: 'docente_untdf',
+  arancel_pago: 'En efectivo',
+  ponencia_presenta: true,
+  ponencia_titulo: 'Algun titulo',
+  ponencia_area: 'Medicina Laboral',
+  ponencia_coautores: 'Pedro pedrin',
+  ponencia_institucion: 'UNTDF',
+  acompanantes: 0,
+  confirmado: false,
+}
