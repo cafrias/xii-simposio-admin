@@ -101,7 +101,7 @@ class Login extends React.Component<IProps, IState> {
     if (OK) {
       this.props.allowAccess()
     } else {
-      const msg = err ? err.toString() : 'Error deconocido al logearse'
+      const msg = err ? err.message : 'Error deconocido al logearse'
       this.props.commitMessage(msg)
     }
   }
