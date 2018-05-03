@@ -9,6 +9,9 @@ import withFloatingForm, * as Form from './FloatingForm'
 import SendButton from '../../SendButton/SendButton'
 
 import AuthServ from '../Service'
+import * as withSnackbar from '../../Snackbar/withSnackbar'
+
+type IProps = Form.FormProps & withSnackbar.IWithSnack
 
 interface IField {
   value: string,
@@ -22,8 +25,8 @@ interface IState {
 
 type FormFields = keyof IState
 
-class Login extends React.Component<Form.FormProps, IState> {
-  constructor(props: Form.FormProps) {
+class Login extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props)
 
     this.state = {
@@ -98,9 +101,12 @@ class Login extends React.Component<Form.FormProps, IState> {
     if (OK) {
       this.props.allowAccess()
     } else {
-      console.log(err)
+      const msg = err ? err.toString() : 'Error deconocido al logearse'
+      this.props.commitMessage(msg)
     }
   }
 }
 
-export default withFloatingForm(Login)
+const withSnack = withSnackbar.default(Login)
+
+export default withFloatingForm(withSnack)
