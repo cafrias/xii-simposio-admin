@@ -56,7 +56,7 @@ const Form: React.SFC<StyledProps> = ({ error, query, onChange, classes, loading
 const decorate = withStyles(({ }) => ({
   formPaper: {
     padding: '1.125rem',
-    minWidth: '30%',
+    minWidth: '50%',
   },
 }))
 

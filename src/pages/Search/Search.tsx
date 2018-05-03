@@ -41,7 +41,7 @@ class Search extends React.Component<Props, IState> {
     } = this.state
 
     return (
-      <section className="search-container">
+      <section className="container search-container">
         <Form
           query={query}
           error={error}

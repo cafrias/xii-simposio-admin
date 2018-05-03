@@ -8,6 +8,8 @@ import Layout from '../../components/Layout/Layout'
 
 import SubsModal from './components/SubsModal'
 
+import Typography from 'material-ui/Typography'
+
 type Props = {} & SubsServ.IWithService
 
 interface IState {
@@ -41,6 +43,8 @@ class List extends React.Component<Props, IState> {
     } = this.state
     return (
       <section className="container list-container">
+        <Typography variant="display1" color="primary">Listado de Subscripciones</Typography>
+        <Typography variant="headline" color="textSecondary" gutterBottom={true}>Todas</Typography>
         <ListSubs results={results} rowClickHandler={this.openModal} />
         {
           <SubsModal

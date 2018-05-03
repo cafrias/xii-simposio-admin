@@ -36,7 +36,7 @@ const decorate = withStyles(({ }) => ({
   paper: {
     marginTop: '1.125rem',
     padding: '1.125rem',
-    minWidth: '85%',
+    width: '100%',
   },
 }))
 
