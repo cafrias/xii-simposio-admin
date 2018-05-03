@@ -3,7 +3,7 @@ import * as React from 'react'
 import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
 import TextField from 'material-ui/TextField'
-import Button from 'material-ui/Button'
+// import Button from 'material-ui/Button'
 
 import SendButton from '../../SendButton/SendButton'
 

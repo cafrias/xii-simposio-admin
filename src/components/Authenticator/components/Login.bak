@@ -9,7 +9,7 @@ import { newPassRequired } from '../errors'
 
 import LoginForm from './LoginForm'
 
-type IProps = Form.FormProps & withSnackbar.IWithSnack
+type IProps = Form.IFormProps & withSnackbar.IWithSnack
 
 
 interface IField {

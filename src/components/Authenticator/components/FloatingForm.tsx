@@ -8,21 +8,9 @@ import Paper from 'material-ui/Paper'
 
 type FormStatus = 'initial' | 'loading' | 'error'
 
-export type FormProps = IProps & {
+export interface IFormProps {
   status: FormStatus,
   setStatus: (s: FormStatus) => void,
-}
-
-interface IProps {
-  allowAccess: () => void,
-  blockAccess: () => void,
-}
-
-type StyledProps = IProps & {
-  classes: {
-    background: string,
-    paper: string,
-  }
 }
 
 interface IState {
@@ -46,46 +34,54 @@ const decorate = withStyles((theme) => ({
 }))
 
 
+// STYLED COMPONENT
+
+interface IFloatingFormProps {
+  render: React.ReactNode,
+}
+
+const FloatingForm = decorate<IFloatingFormProps>(
+  ({ render, classes }) => (
+    <section className={classes.background}>
+      <Paper className={classes.paper} elevation={6}>
+        {render}
+      </Paper>
+    </section>
+  )
+)
+
+
 // HOC
 
-const withFloatingForm = <P extends FormProps>(Comp: React.ComponentType<P>) => (
-  decorate<IProps>(
-    class FloatingForm extends React.Component<StyledProps, IState> {
-      constructor(props: StyledProps) {
-        super(props)
-        this.state = {
-          status: 'initial',
-        }
-
-        this.setStatus = this.setStatus.bind(this)
+const withFloatingForm = <P extends {}>(Comp: React.ComponentType<P & IFormProps>) => (
+  class WithFloatingForm extends React.Component<P, IState> {
+    constructor(props: P) {
+      super(props)
+      this.state = {
+        status: 'initial',
       }
 
-      public render() {
-        const {
-          classes,
-        } = this.props
-
-        return (
-          <section className={classes.background}>
-            <Paper className={classes.paper} elevation={6}>
-              <Comp
-                status={this.state.status}
-                setStatus={this.setStatus}
-                allowAccess={this.props.allowAccess}
-                blockAccess={this.props.blockAccess}
-              />
-            </Paper>
-          </section>
-        )
-      }
-
-      private setStatus(status: FormStatus) {
-        this.setState(Object.assign({}, this.state, {
-          status,
-        }))
-      }
+      this.setStatus = this.setStatus.bind(this)
     }
-  )
+
+    public render() {
+      return (
+        <FloatingForm render={
+          <Comp
+            status={this.state.status}
+            setStatus={this.setStatus}
+            {...this.props}
+          />
+        } />
+      )
+    }
+
+    private setStatus(status: FormStatus) {
+      this.setState(Object.assign({}, this.state, {
+        status,
+      }))
+    }
+  }
 )
 
 export default withFloatingForm

@@ -14,9 +14,13 @@ import Button from 'material-ui/Button'
 
 import SendButton from '../../SendButton/SendButton'
 
-type IProps = Form.FormProps & withSnackbar.IWithSnack & {
+interface IBaseProps {
   requiresNewPass: () => void,
+  allowAccess: () => void,
+  blockAccess: () => void,
 }
+
+type IProps = Form.IFormProps & withSnackbar.IWithSnack & IBaseProps
 
 interface IField {
   value: string,
@@ -126,5 +130,4 @@ class Login extends React.Component<IProps, IState> {
 
 const withSnack = withSnackbar.default(Login)
 
-export default withFloatingForm(withSnack)
-
+export default withFloatingForm<IBaseProps>(withSnack)
