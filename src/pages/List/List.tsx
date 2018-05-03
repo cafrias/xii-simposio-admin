@@ -4,13 +4,18 @@ import * as SubsEnt from '../../entities/Subscripcion'
 import * as SubsServ from '../../components/Subscripcion/Service'
 
 import ListSubs from '../../components/Subscripcion/List/List'
-import Layout from '../../components/Layout/Layout'
 
 import SubsModal from './components/SubsModal'
 
 import Typography from 'material-ui/Typography'
 
-type Props = {} & SubsServ.IWithService
+type ListType = 'all' | 'confirmed' | 'pending'
+
+interface IProps {
+  type: ListType
+}
+
+export type Props = IProps & SubsServ.IWithService
 
 interface IState {
   results: SubsEnt.ISubscripcion[],
@@ -44,7 +49,9 @@ class List extends React.Component<Props, IState> {
     return (
       <section className="container list-container">
         <Typography variant="display1" color="primary">Listado de Subscripciones</Typography>
-        <Typography variant="headline" color="textSecondary" gutterBottom={true}>Todas</Typography>
+        <Typography variant="headline" color="textSecondary" gutterBottom={true}>
+          {this.getSubtitle(this.props.type)}
+        </Typography>
         <ListSubs results={results} rowClickHandler={this.openModal} />
         {
           <SubsModal
@@ -56,6 +63,17 @@ class List extends React.Component<Props, IState> {
         }
       </section>
     )
+  }
+
+  private getSubtitle(type: ListType): string {
+    switch (type) {
+      case 'all':
+        return 'Todas'
+      case 'pending':
+        return 'Pendientes'
+      case 'confirmed':
+        return 'Confirmadas'
+    }
   }
 
   private openModal(e: React.MouseEvent<HTMLTableRowElement>) {
@@ -72,4 +90,4 @@ class List extends React.Component<Props, IState> {
   }
 }
 
-export default SubsServ.withSubscripcion<Props>((props: Props) => <Layout render={<List {...props} />} />)
+export default List
