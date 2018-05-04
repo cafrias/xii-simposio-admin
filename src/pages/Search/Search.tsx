@@ -64,10 +64,10 @@ class Search extends React.Component<Props, IState> {
 
   private handleInput(e: React.SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value
-    const newState = Object.assign({}, this.state, {
+    this.setState({
+      ...this.state,
       query: newValue,
     })
-    this.setState(newState)
   }
 
   private async handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
