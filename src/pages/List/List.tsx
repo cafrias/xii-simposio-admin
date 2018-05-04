@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import * as SubsEnt from '../../entities/Subscripcion'
-import * as SubsServ from '../../components/Subscripcion/Service'
+import * as SubsServHOC from '../../components/Subscripcion/withSubscripcion'
 
 import ListSubs from '../../components/Subscripcion/List/List'
 
@@ -15,7 +15,7 @@ interface IProps {
   type: ListType
 }
 
-export type Props = IProps & SubsServ.IWithService
+export type Props = IProps & SubsServHOC.IWithService
 
 interface IState {
   results: SubsEnt.ISubscripcion[],

@@ -60,7 +60,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
             <Contacto s={s} classes={classes} />
           </Grid>
           <Grid item={true} xs={12} lg={3}>
-            <Pago s={s} classes={classes} confirmar={subsServ.confirmar} />
+            <Pago s={s} classes={classes} subsServ={subsServ} />
           </Grid>
           <Grid item={true} xs={12} lg={3}>
             <Ponencia s={s} classes={classes} />

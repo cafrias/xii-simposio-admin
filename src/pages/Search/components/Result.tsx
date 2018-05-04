@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import * as SubsEnt from '../../../entities/Subscripcion'
-import * as SubsServ from '../../../components/Subscripcion/Service'
+import * as SubsServHOC from '../../../components/Subscripcion/withSubscripcion'
 
 import { withStyles } from 'material-ui/styles'
 import Paper from 'material-ui/Paper'
@@ -12,7 +12,7 @@ interface IProps {
   result: SubsEnt.ISubscripcion,
 }
 
-type Props = IProps & SubsServ.IWithService
+type Props = IProps & SubsServHOC.IWithService
 
 type StyledProps = Props & {
   classes: {

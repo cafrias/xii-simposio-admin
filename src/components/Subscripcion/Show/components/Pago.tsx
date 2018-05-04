@@ -12,7 +12,7 @@ interface IProps {
   classes: {
     dataList: string,
   },
-  confirmar: SubsServ.Confirmar,
+  subsServ: SubsServ.IService
 }
 
 const ArancelCategoria = (cat: string): [string, number] => {
@@ -30,13 +30,13 @@ const ArancelCategoria = (cat: string): [string, number] => {
   }
 }
 
-const handleChange = (s: Subscripcion.ISubscripcion, confirmar: SubsServ.Confirmar) =>
+const handleChange = (s: Subscripcion.ISubscripcion, subsServ: SubsServ.IService) =>
   (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { checked, } = e.currentTarget
-    confirmar(s.documento, checked)
+    subsServ.confirmar(s.documento, checked)
   }
 
-const Pago = ({ s, classes, confirmar, }: IProps) => {
+const Pago = ({ s, classes, subsServ, }: IProps) => {
   const [categoria, base,] = ArancelCategoria(s.arancel_categoria)
   return (
     <>
@@ -46,7 +46,7 @@ const Pago = ({ s, classes, confirmar, }: IProps) => {
           <ListItemText primary={s.confirmado ? 'Si' : 'No'} secondary="Confirmado" />
           <ListItemSecondaryAction>
             <Switch
-              onChange={handleChange(s, confirmar)}
+              onChange={handleChange(s, subsServ)}
               checked={s.confirmado}
             />
           </ListItemSecondaryAction>

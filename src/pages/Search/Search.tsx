@@ -2,14 +2,14 @@ import * as React from 'react'
 import './Search.css'
 
 import * as Subscripcion from '../../entities/Subscripcion'
-import * as SubsServ from '../../components/Subscripcion/Service'
+import withSubscripcion, * as SubsHOC from '../../components/Subscripcion/withSubscripcion'
 
 import Layout from '../../components/Layout/Layout'
 
 import Form from './components/Form'
 import Result from './components/Result'
 
-type Props = {} & SubsServ.IWithService
+type Props = {} & SubsHOC.IWithService
 
 interface IState {
   result: Subscripcion.ISubscripcion | undefined,
@@ -74,6 +74,6 @@ class Search extends React.Component<Props, IState> {
   }
 }
 
-export default SubsServ.withSubscripcion<Props>(
+export default withSubscripcion<Props>(
   (props: Props) => <Layout render={<Search {...props} />} />
 )

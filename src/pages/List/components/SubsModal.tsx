@@ -2,7 +2,7 @@ import * as React from 'react'
 import './SubsModal.css'
 
 import * as SubsEnt from '../../../entities/Subscripcion'
-import * as SubsServ from '../../../components/Subscripcion/Service'
+import * as SubsServHOC from '../../../components/Subscripcion/withSubscripcion'
 import ShowSubs from '../../../components/Subscripcion/Show/Show'
 
 import Dialog, { DialogTitle } from 'material-ui/Dialog'
@@ -13,7 +13,7 @@ interface IProps {
   onClose: () => void,
 }
 
-type Props = IProps & SubsServ.IWithService
+type Props = IProps & SubsServHOC.IWithService
 
 const SubsModal: React.SFC<Props> = ({ subscripcion, open, onClose, subsServ, }) => (
   <Dialog maxWidth="md" open={open} onClose={onClose} aria-labelledby="modal_title">
