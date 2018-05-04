@@ -4,12 +4,15 @@ import './Search.css'
 import * as Subscripcion from '../../entities/Subscripcion'
 import withSubscripcion, * as SubsHOC from '../../components/Subscripcion/withSubscripcion'
 
+import withSnackBar, * as SnackT from '../../components/Snackbar/withSnackbar'
 import Layout from '../../components/Layout/Layout'
 
 import Form from './components/Form'
 import Result from './components/Result'
 
-type Props = {} & SubsHOC.IWithService
+type PropsWithServ = SubsHOC.IWithService
+
+type Props = PropsWithServ & SnackT.IWithSnack
 
 interface IState {
   result: Subscripcion.ISubscripcion | undefined,
@@ -23,13 +26,14 @@ class Search extends React.Component<Props, IState> {
     super(props)
 
     this.state = {
-      result: Subscripcion.FixSubscripcion,
+      result: undefined,
       query: '',
       error: false,
       loading: false,
     }
 
     this.handleInput = this.handleInput.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   public render() {
@@ -66,14 +70,36 @@ class Search extends React.Component<Props, IState> {
     this.setState(newState)
   }
 
-  private handleSubmit() {
-    const newState = Object.assign({}, this.state, {
+  private async handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    this.setState({
+      ...this.state,
       loading: true,
     })
-    this.setState(newState)
+
+    const [subs, err] = await this.props.subsServ.get(Number.parseInt(this.state.query, 10))
+    if (err) {
+      const msg = err.message ? err.message : err.toString()
+      this.props.commitMessage(msg)
+
+      this.setState({
+        ...this.state,
+        loading: false,
+      })
+      return
+    }
+
+    this.setState({
+      ...this.state,
+      loading: false,
+      result: subs,
+    })
   }
 }
 
-export default withSubscripcion<Props>(
-  (props: Props) => <Layout render={<Search {...props} />} />
+export default withSubscripcion<PropsWithServ>(
+  withSnackBar(
+    (props: Props) => <Layout render={<Search {...props} />} />
+  )
 )
