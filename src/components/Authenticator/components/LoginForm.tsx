@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import withFloatingForm, * as Form from './FloatingForm'
 
+import * as Service from '../Service'
+
 import AuthServ from '../Service'
 import * as withSnackbar from '../../Snackbar/withSnackbar'
 
@@ -15,7 +17,7 @@ import Button from 'material-ui/Button'
 import SendButton from '../../SendButton/SendButton'
 
 interface IBaseProps {
-  requiresNewPass: () => void,
+  requiresNewPass: (u: Service.IUser) => void,
   allowAccess: () => void,
   blockAccess: () => void,
 }
@@ -110,21 +112,22 @@ class Login extends React.Component<IProps, IState> {
       password,
     } = this.state
 
-    const [OK, err] = await AuthServ.login(username.value, password.value)
+    const [user, err] = await AuthServ.login(username.value, password.value)
 
-    if (OK) {
+    if (user) {
+      this.props.setStatus('initial')
+
       if (err && err.message === ErrNewPassword) {
-        this.props.requiresNewPass()
+        this.props.requiresNewPass(user)
       } else {
         this.props.allowAccess()
       }
     } else {
+      this.props.setStatus('error')
+
       const msg = err ? err.message : 'Error deconocido al logearse'
       this.props.commitMessage(msg)
-      this.props.setStatus('initial')
     }
-
-    this.props.setStatus('initial')
   }
 }
 

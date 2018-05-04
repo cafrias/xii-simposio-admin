@@ -1,7 +1,9 @@
 import * as React from 'react'
 
+import * as Service from '../Service'
+
 import LoginForm from './LoginForm'
-// import LoginNewPass from './LoginNewPass'
+import LoginNewPass from './LoginNewPass'
 
 interface IProps {
   allowAccess: () => void,
@@ -9,6 +11,7 @@ interface IProps {
 }
 
 interface IState {
+  user: Service.IUser | undefined,
   requiresNewPass: boolean,
 }
 
@@ -17,6 +20,7 @@ class Login extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
+      user: undefined,
       requiresNewPass: false,
     }
 
@@ -24,8 +28,11 @@ class Login extends React.Component<IProps, IState> {
   }
 
   public render() {
-    return this.state.requiresNewPass
-      ? null
+    return this.state.requiresNewPass && this.state.user
+      ? <LoginNewPass
+        allowAccess={this.props.allowAccess}
+        user={this.state.user}
+      />
       : <LoginForm
         requiresNewPass={this.requiresNewPass}
         allowAccess={this.props.allowAccess}
@@ -33,9 +40,10 @@ class Login extends React.Component<IProps, IState> {
       />
   }
 
-  private requiresNewPass() {
+  private requiresNewPass(user: Service.IUser) {
     this.setState(Object.assign({}, this.state, {
       requiresNewPass: true,
+      user,
     }))
   }
 }
