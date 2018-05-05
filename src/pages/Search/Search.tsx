@@ -36,6 +36,8 @@ class Search extends React.Component<Props, IState> {
 
     this.handleInput = this.handleInput.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleConfirm = this.handleConfirm.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   public render() {
@@ -56,9 +58,12 @@ class Search extends React.Component<Props, IState> {
           onSubmit={this.handleSubmit}
         />
         {
-          result ? (
-            <Result result={result} subsServ={this.props.subsServ} />
-          ) : null
+          result
+            ? <Result result={result} actions={{
+              confirm: this.handleConfirm,
+              delete: this.handleDelete
+            }} />
+            : null
         }
       </section>
     )
@@ -98,7 +103,40 @@ class Search extends React.Component<Props, IState> {
       result: subs,
     })
   }
+
+  private async handleConfirm(s: Subscripcion.ISubscripcion, conf: boolean): Promise<void> {
+    const [nSubs, err] = await this.props.subsServ.confirmar(s, conf)
+
+    if (err) {
+      this.props.commitMessage(err.message)
+      return
+    }
+
+    this.setState({
+      ...this.state,
+      result: nSubs,
+    })
+
+    this.props.commitMessage('Subscripción modificada con éxito')
+  }
+
+  private async handleDelete(doc: number): Promise<void> {
+    const err = await this.props.subsServ.delete(doc)
+
+    if (err) {
+      this.props.commitMessage(err.message)
+      return
+    }
+
+    this.setState({
+      ...this.state,
+      result: undefined,
+    })
+
+    this.props.commitMessage('Subscripción eliminada con éxito')
+  }
 }
+
 
 export default withSubscripcion<PropsWithServ>(
   withSnackbar(

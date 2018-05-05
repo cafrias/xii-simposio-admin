@@ -11,13 +11,21 @@ interface IAPIResponse {
 // OUTPUTS
 
 export type GetOutput = [Subs.ISubscripcion, Error | undefined]
-export type ConfirmarOutput = [boolean, Error | undefined]
-export type DeleteOutput = [boolean, Error | undefined]
+export type ConfirmarOutput = [Subs.ISubscripcion, Error | undefined]
+export type DeleteOutput = Error | undefined
 
 export interface IService {
   get(doc: number): Promise<GetOutput>
   delete(doc: number): Promise<DeleteOutput>
-  confirmar(doc: number, conf: boolean): Promise<ConfirmarOutput>
+  confirmar(s: Subs.ISubscripcion, conf: boolean): Promise<ConfirmarOutput>
+}
+
+interface IAPIError {
+  response: {
+    status: number,
+    data: IAPIResponse,
+  },
+  toString: () => string,
 }
 
 export const API_NAME = 'Simposio'
@@ -25,10 +33,9 @@ export const API_NAME = 'Simposio'
 class SubscripcionService implements IService {
   public async get(doc: number): Promise<GetOutput> {
     try {
-      const session = await Auth.currentSession();
       const res: IAPIResponse = await API.get(API_NAME, `/subscripcion?doc=${doc}`, {
         headers: {
-          Authorization: session.idToken.jwtToken,
+          Authorization: await this.getIdToken(),
         },
       })
 
@@ -36,28 +43,54 @@ class SubscripcionService implements IService {
 
       return [subs, undefined]
     } catch (e) {
-      switch (e.response.status) {
-        // Known errors
-        case 400:
-        case 404:
-        case 500:
-          return [
-            Subs.EmptySubscripcion,
-            new Error(e.response.data.message)
-          ]
-        // Unknown error
-        default:
-          return [Subs.EmptySubscripcion, Error('Error desconocido, contacte con soporte.')]
-      }
+      return this.mapErrors<Subs.ISubscripcion>(e, Subs.EmptySubscripcion)
     }
   }
 
   public async delete(doc: number): Promise<DeleteOutput> {
-    return [true, undefined]
+    return undefined
   }
 
-  public async confirmar(doc: number, conf: boolean): Promise<ConfirmarOutput> {
-    return [true, undefined]
+  public async confirmar(s: Subs.ISubscripcion, confirmado: boolean): Promise<ConfirmarOutput> {
+    const lSubs: Subs.ISubscripcion = {
+      ...s,
+      confirmado,
+    }
+
+    try {
+      await API.put(API_NAME, `/subscripcion`, {
+        headers: {
+          Authorization: await this.getIdToken(),
+        },
+        body: lSubs,
+      })
+      return [lSubs, undefined]
+    } catch (e) {
+      return this.mapErrors<Subs.ISubscripcion>(e, Subs.EmptySubscripcion)
+    }
+  }
+
+  private async getIdToken(): Promise<string> {
+    const session = await Auth.currentSession()
+
+    return session ? session.idToken.jwtToken : ''
+  }
+
+  private mapErrors<V>(err: IAPIError, def: V): [V, Error | undefined] {
+    if (!err.response) {
+      return [def, new Error(err.toString())]
+    }
+
+    switch (err.response.status) {
+      // Known errors
+      case 400:
+      case 404:
+      case 500:
+        return [def, new Error(err.response.data.message)]
+      // Unknown error
+      default:
+        return [def, new Error('Error desconocido, contacte con soporte.')]
+    }
   }
 }
 

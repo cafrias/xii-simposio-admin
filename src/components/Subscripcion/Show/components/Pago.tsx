@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import * as Subscripcion from '../../../../entities/Subscripcion'
-import * as SubsServ from '../../Service'
 
 import List, { ListItem, ListItemText, ListItemSecondaryAction, } from 'material-ui/List'
 import Switch from 'material-ui/Switch'
@@ -12,7 +11,7 @@ interface IProps {
   classes: {
     dataList: string,
   },
-  subsServ: SubsServ.IService
+  confirm: (s: Subscripcion.ISubscripcion, conf: boolean) => Promise<void>,
 }
 
 const ArancelCategoria = (cat: string): [string, number] => {
@@ -30,13 +29,13 @@ const ArancelCategoria = (cat: string): [string, number] => {
   }
 }
 
-const handleChange = (s: Subscripcion.ISubscripcion, subsServ: SubsServ.IService) =>
+const handleChange = (s: Subscripcion.ISubscripcion, confirm: (s: Subscripcion.ISubscripcion, conf: boolean) => Promise<void>) =>
   (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { checked, } = e.currentTarget
-    subsServ.confirmar(s.documento, checked)
+    confirm(s, checked)
   }
 
-const Pago = ({ s, classes, subsServ, }: IProps) => {
+const Pago = ({ s, classes, confirm }: IProps) => {
   const [categoria, base,] = ArancelCategoria(s.arancel_categoria)
   return (
     <>
@@ -46,7 +45,7 @@ const Pago = ({ s, classes, subsServ, }: IProps) => {
           <ListItemText primary={s.confirmado ? 'Si' : 'No'} secondary="Confirmado" />
           <ListItemSecondaryAction>
             <Switch
-              onChange={handleChange(s, subsServ)}
+              onChange={handleChange(s, confirm)}
               checked={s.confirmado}
             />
           </ListItemSecondaryAction>

@@ -1,18 +1,18 @@
 import * as React from 'react'
 
 import * as SubsEnt from '../../../entities/Subscripcion'
-import * as SubsServHOC from '../../../components/Subscripcion/withSubscripcion'
 
 import { withStyles } from 'material-ui/styles'
 import Paper from 'material-ui/Paper'
 
-import SubsShow from '../../../components/Subscripcion/Show/Show'
+import * as SubsShow from '../../../components/Subscripcion/Show/Show'
 
 interface IProps {
   result: SubsEnt.ISubscripcion,
+  actions: SubsShow.IActions,
 }
 
-type Props = IProps & SubsServHOC.IWithService
+type Props = IProps
 
 type StyledProps = Props & {
   classes: {
@@ -20,11 +20,11 @@ type StyledProps = Props & {
   }
 }
 
-const Result: React.SFC<StyledProps> = ({ result, subsServ, classes, }) => (
+const Result: React.SFC<StyledProps> = ({ result, classes, actions }) => (
   <Paper component="article" className={classes.paper}>
-    <SubsShow
+    <SubsShow.default
       s={result}
-      subsServ={subsServ}
+      actions={actions}
     />
   </Paper>
 )

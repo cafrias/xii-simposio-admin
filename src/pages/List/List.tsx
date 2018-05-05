@@ -3,6 +3,9 @@ import * as React from 'react'
 import * as SubsEnt from '../../entities/Subscripcion'
 import * as SubsServHOC from '../../components/Subscripcion/withSubscripcion'
 
+import withSnackbar from '../../components/Snackbar/withSnackbar'
+import * as Snack from '../../components/Snackbar/Snackbar'
+
 import ListSubs from '../../components/Subscripcion/List/List'
 
 import SubsModal from './components/SubsModal'
@@ -15,7 +18,9 @@ interface IProps {
   type: ListType
 }
 
-export type Props = IProps & SubsServHOC.IWithService
+type PropsWithServ = IProps & SubsServHOC.IWithService
+
+export type Props = PropsWithServ & Snack.IWithSnack
 
 interface IState {
   results: SubsEnt.ISubscripcion[],
@@ -38,6 +43,8 @@ class List extends React.Component<Props, IState> {
 
     this.openModal = this.openModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.handleConfirm = this.handleConfirm.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   public render() {
@@ -58,7 +65,10 @@ class List extends React.Component<Props, IState> {
             subscripcion={modalData}
             open={modalOpen}
             onClose={this.closeModal}
-            subsServ={this.props.subsServ}
+            actions={{
+              confirm: this.handleConfirm,
+              delete: this.handleDelete
+            }}
           />
         }
       </section>
@@ -88,6 +98,37 @@ class List extends React.Component<Props, IState> {
       modalOpen: false,
     }))
   }
+
+  private async handleConfirm(s: SubsEnt.ISubscripcion, conf: boolean): Promise<void> {
+    const [nSubs, err] = await this.props.subsServ.confirmar(s, conf)
+    if (err) {
+      this.props.commitMessage(err.message)
+      return
+    }
+
+    this.setState({
+      ...this.state,
+      modalData: nSubs,
+    })
+
+    this.props.commitMessage('Subscripción modificada con éxito')
+  }
+
+  private async handleDelete(doc: number): Promise<void> {
+    const err = await this.props.subsServ.delete(doc)
+    if (err) {
+      this.props.commitMessage(err.message)
+      return
+    }
+
+    this.setState({
+      ...this.state,
+      modalData: SubsEnt.EmptySubscripcion,
+      modalOpen: false,
+    })
+
+    this.props.commitMessage('Subscripción eliminada con éxito')
+  }
 }
 
-export default List
+export default withSnackbar(List)

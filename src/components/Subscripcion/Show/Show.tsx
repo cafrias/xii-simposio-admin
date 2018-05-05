@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import * as Subscripcion from '../../../entities/Subscripcion'
-import * as SubsServ from '../Service'
 
 import { withStyles } from 'material-ui/styles'
 import Button from 'material-ui/Button'
@@ -17,9 +16,14 @@ import Ponencia from './components/Ponencia'
 
 import WarningDialog from './components/WarningDialog'
 
+export interface IActions {
+  confirm: (s: Subscripcion.ISubscripcion, conf: boolean) => Promise<void>,
+  delete: (doc: number) => Promise<void>,
+}
+
 interface IProps {
   s: Subscripcion.ISubscripcion,
-  subsServ: SubsServ.IService,
+  actions: IActions,
 }
 
 type StyledProps = IProps & {
@@ -48,7 +52,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
   }
 
   public render() {
-    const { s, classes, subsServ } = this.props
+    const { s, classes } = this.props
     const { open, } = this.state
     return (
       <>
@@ -60,7 +64,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
             <Contacto s={s} classes={classes} />
           </Grid>
           <Grid item={true} xs={12} lg={3}>
-            <Pago s={s} classes={classes} subsServ={subsServ} />
+            <Pago s={s} classes={classes} confirm={this.props.actions.confirm} />
           </Grid>
           <Grid item={true} xs={12} lg={3}>
             <Ponencia s={s} classes={classes} />
@@ -95,7 +99,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
   }
 
   private handleOK() {
-    this.props.subsServ.delete(this.props.s.documento)
+    this.props.actions.delete(this.props.s.documento)
     this.handleClose()
   }
 }
