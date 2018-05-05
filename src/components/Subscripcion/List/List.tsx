@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper'
 
 interface IProps {
   results: SubsEnt.ISubscripcion[],
-  rowClickHandler: (e: React.MouseEvent<HTMLTableRowElement>) => void
+  rowClickHandler: (doc: number) => (e: React.MouseEvent<HTMLTableRowElement>) => void
 }
 
 type StyledProps = IProps & {
@@ -34,7 +34,7 @@ const ResultsTable = ({ results, classes, rowClickHandler, }: StyledProps) => (
       <TableBody>
         {results.map(n => {
           return (
-            <TableRow hover={true} key={n.documento} onClick={rowClickHandler}>
+            <TableRow hover={true} key={n.documento} onClick={rowClickHandler(n.documento)}>
               <TableCell numeric={true}>{n.documento}</TableCell>
               <TableCell>{n.apellido}</TableCell>
               <TableCell>{n.nombre}</TableCell>

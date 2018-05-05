@@ -1,4 +1,5 @@
 import * as React from 'react'
+import './List.css'
 
 import * as SubsEnt from '../../entities/Subscripcion'
 import * as SubsServHOC from '../../components/Subscripcion/withSubscripcion'
@@ -11,6 +12,9 @@ import ListSubs from '../../components/Subscripcion/List/List'
 import SubsModal from './components/SubsModal'
 
 import Typography from 'material-ui/Typography'
+import Button from 'material-ui/Button'
+import Sync from '@material-ui/icons/Sync'
+import { CircularProgress } from 'material-ui/Progress'
 
 type ListType = 'all' | 'confirmed' | 'pending'
 
@@ -24,6 +28,7 @@ export type Props = PropsWithServ & Snack.IWithSnack
 
 interface IState {
   results: SubsEnt.ISubscripcion[],
+  loading: boolean,
   modalOpen: boolean,
   modalData: SubsEnt.ISubscripcion,
 }
@@ -33,18 +38,17 @@ class List extends React.Component<Props, IState> {
     super(props)
 
     this.state = {
-      results: [
-        SubsEnt.FixSubscripcion,
-        Object.assign({}, SubsEnt.FixSubscripcion, { documento: 123456789 }),
-      ],
+      results: [],
       modalOpen: false,
       modalData: SubsEnt.EmptySubscripcion,
+      loading: true,
     }
 
     this.openModal = this.openModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleRefresh = this.handleRefresh.bind(this)
   }
 
   public render() {
@@ -59,20 +63,63 @@ class List extends React.Component<Props, IState> {
         <Typography variant="headline" color="textSecondary" gutterBottom={true}>
           {this.getSubtitle(this.props.type)}
         </Typography>
-        <ListSubs results={results} rowClickHandler={this.openModal} />
+        <div className="list__controls">
+          <Button variant="raised" color="primary" onClick={this.handleRefresh}>
+            Actualizar
+            <Sync />
+          </Button>
+        </div>
         {
-          <SubsModal
-            subscripcion={modalData}
-            open={modalOpen}
-            onClose={this.closeModal}
-            actions={{
-              confirm: this.handleConfirm,
-              delete: this.handleDelete
-            }}
-          />
+          this.state.loading
+            ? <CircularProgress />
+            : <ListSubs results={results} rowClickHandler={this.openModal} />
         }
+        <SubsModal
+          subscripcion={modalData}
+          open={modalOpen}
+          onClose={this.closeModal}
+          actions={{
+            confirm: this.handleConfirm,
+            delete: this.handleDelete
+          }}
+        />
       </section>
     )
+  }
+
+  public componentDidMount() {
+    this.refresh()
+  }
+
+  private handleRefresh() {
+    this.setState({
+      ...this.state,
+      loading: true,
+    })
+
+    this.refresh()
+  }
+
+  private async refresh() {
+    const [results, err] = await this.props.subsServ.listar(this.props.type)
+    if (err) {
+      this.props.commitMessage(err.message)
+      this.setState({
+        ...this.state,
+        loading: false,
+      })
+      return
+    }
+
+    if (results.length === 0) {
+      this.props.commitMessage('No hay subscripciones!')
+    }
+
+    this.setState({
+      ...this.state,
+      loading: false,
+      results,
+    })
   }
 
   private getSubtitle(type: ListType): string {
@@ -86,11 +133,19 @@ class List extends React.Component<Props, IState> {
     }
   }
 
-  private openModal(e: React.MouseEvent<HTMLTableRowElement>) {
-    this.setState(Object.assign({}, this.state, {
-      modalOpen: true,
-      modalData: SubsEnt.FixSubscripcion,
-    }))
+  private openModal(doc: number) {
+    return (e: React.MouseEvent<HTMLTableRowElement>) => {
+      const idx = this.findSubsIdx(doc)
+      if (idx === -1) {
+        this.props.commitMessage('Error inesperado, actualice e intente nuevamente.')
+        return
+      }
+
+      this.setState(Object.assign({}, this.state, {
+        modalOpen: true,
+        modalData: this.state.results[idx],
+      }))
+    }
   }
 
   private closeModal() {
@@ -106,9 +161,20 @@ class List extends React.Component<Props, IState> {
       return
     }
 
+    const idx = this.findSubsIdx(nSubs.documento)
+    if (idx === -1) {
+      this.props.commitMessage('Error inesperado, actualice e intente nuevamente.')
+      return
+    }
+
     this.setState({
       ...this.state,
       modalData: nSubs,
+      results: [
+        ...this.state.results.slice(0, idx),
+        nSubs,
+        ...this.state.results.slice(idx + 1),
+      ],
     })
 
     this.props.commitMessage('Subscripción modificada con éxito')
@@ -121,13 +187,35 @@ class List extends React.Component<Props, IState> {
       return
     }
 
+    const idx = this.findSubsIdx(doc)
+    if (idx === -1) {
+      this.props.commitMessage('Error inesperado, actualice e intente nuevamente.')
+      return
+    }
+
     this.setState({
       ...this.state,
       modalData: SubsEnt.EmptySubscripcion,
       modalOpen: false,
+      results: [
+        ...this.state.results.slice(0, idx),
+        ...this.state.results.slice(idx + 1),
+      ],
     })
 
     this.props.commitMessage('Subscripción eliminada con éxito')
+  }
+
+  private findSubsIdx(doc: number): number {
+    let idx = -1
+    this.state.results.forEach((res, i) => {
+      if (res.documento === doc) {
+        idx = i
+        return
+      }
+    })
+
+    return idx
   }
 }
 

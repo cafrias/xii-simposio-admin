@@ -8,16 +8,20 @@ interface IAPIResponse {
   payload?: any,
 }
 
+export type ListTypes = 'all' | 'pending' | 'confirmed'
+
 // OUTPUTS
 
 export type GetOutput = [Subs.ISubscripcion, Error | undefined]
 export type ConfirmarOutput = [Subs.ISubscripcion, Error | undefined]
+export type ListarOutput = [Subs.ISubscripcion[], Error | undefined]
 export type DeleteOutput = Error | undefined
 
 export interface IService {
   get(doc: number): Promise<GetOutput>
   delete(doc: number): Promise<DeleteOutput>
   confirmar(s: Subs.ISubscripcion, conf: boolean): Promise<ConfirmarOutput>
+  listar(type: ListTypes): Promise<ListarOutput>
 }
 
 interface IAPIError {
@@ -77,6 +81,22 @@ class SubscripcionService implements IService {
       return [lSubs, undefined]
     } catch (e) {
       return this.mapErrorsToTuple<Subs.ISubscripcion>(e, Subs.EmptySubscripcion)
+    }
+  }
+
+  public async listar(type: ListTypes): Promise<ListarOutput> {
+    try {
+      const res: IAPIResponse = await API.get(API_NAME, `/subscripcion/list?query=${type}`, {
+        headers: {
+          Authorization: await this.getIdToken(),
+        },
+      })
+
+      const subs: Subs.ISubscripcion[] = res.payload || []
+
+      return [subs, undefined]
+    } catch (e) {
+      return this.mapErrorsToTuple<Subs.ISubscripcion[]>(e, [])
     }
   }
 

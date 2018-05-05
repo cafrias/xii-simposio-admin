@@ -56,7 +56,7 @@ class ShowSubscripcion extends React.Component<StyledProps, IState> {
     const { open, } = this.state
     return (
       <>
-        <Grid container={true} spacing={24} xs={12}>
+        <Grid container={true} spacing={24}>
           <Grid item={true} xs={12} lg={3}>
             <Personales s={s} classes={classes} />
           </Grid>
