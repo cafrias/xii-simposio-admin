@@ -5,7 +5,9 @@ import withFloatingForm, * as Form from './FloatingForm'
 import * as Service from '../Service'
 
 import AuthServ from '../Service'
-import * as withSnackbar from '../../Snackbar/withSnackbar'
+
+import * as Snack from '../../Snackbar/Snackbar'
+import withSnackbar from '../../Snackbar/withSnackbar'
 
 import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
@@ -18,7 +20,7 @@ interface IBaseProps {
   user: Service.IUser,
 }
 
-type IProps = Form.IFormProps & withSnackbar.IWithSnack & IBaseProps
+type IProps = Form.IFormProps & Snack.IWithSnack & IBaseProps
 
 interface IField {
   value: string,
@@ -129,6 +131,6 @@ class Login extends React.Component<IProps, IState> {
   }
 }
 
-const withSnack = withSnackbar.default(Login)
+const withSnack = withSnackbar(Login)
 
 export default withFloatingForm<IBaseProps>(withSnack)

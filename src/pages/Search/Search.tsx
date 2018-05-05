@@ -4,7 +4,9 @@ import './Search.css'
 import * as Subscripcion from '../../entities/Subscripcion'
 import withSubscripcion, * as SubsHOC from '../../components/Subscripcion/withSubscripcion'
 
-import withSnackBar, * as SnackT from '../../components/Snackbar/withSnackbar'
+import * as Snack from '../../components/Snackbar/Snackbar'
+import withSnackbar from '../../components/Snackbar/withSnackbar'
+
 import Layout from '../../components/Layout/Layout'
 
 import Form from './components/Form'
@@ -12,7 +14,7 @@ import Result from './components/Result'
 
 type PropsWithServ = SubsHOC.IWithService
 
-type Props = PropsWithServ & SnackT.IWithSnack
+type Props = PropsWithServ & Snack.IWithSnack
 
 interface IState {
   result: Subscripcion.ISubscripcion | undefined,
@@ -99,7 +101,7 @@ class Search extends React.Component<Props, IState> {
 }
 
 export default withSubscripcion<PropsWithServ>(
-  withSnackBar(
+  withSnackbar(
     (props: Props) => <Layout render={<Search {...props} />} />
   )
 )
