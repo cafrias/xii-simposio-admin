@@ -1,4 +1,14 @@
 .list__controls {
-  margin-top: 1.125rem;
+  margin-top: 2.225rem;
   margin-bottom: 2.225rem;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+@media (min-width: 900px) {
+  .list__controls {
+    width: 30%;
+    justify-content: space-between;
+  }
 }

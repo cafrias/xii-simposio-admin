@@ -56,7 +56,7 @@ class TopNav extends React.Component<ITopNavStyled, ITopNavState> {
 
     return (
       <React.Fragment>
-        <AppBar position="fixed" className={classes.container}>
+        <AppBar position="fixed" className={`no-print ${classes.container}`}>
           <Toolbar>
             <IconButton color="inherit" aria-label="Menu" onClick={this.handleToggleMenu}>
               <MenuIcon />

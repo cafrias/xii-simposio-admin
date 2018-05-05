@@ -1,4 +1,5 @@
 import * as React from 'react'
+import './List.css'
 
 import * as SubsEnt from '../../../entities/Subscripcion'
 
@@ -18,17 +19,17 @@ type StyledProps = IProps & {
 }
 
 const ResultsTable = ({ results, classes, rowClickHandler, }: StyledProps) => (
-  <Paper className={classes.paper}>
+  <Paper className={`list__paper ${classes.paper}`}>
     <Table>
       <TableHead>
         <TableRow>
           <TableCell numeric={true}>Documento</TableCell>
           <TableCell>Apellido</TableCell>
           <TableCell>Nombre</TableCell>
-          <TableCell numeric={true}>Celular</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Presenta Ponencia</TableCell>
-          <TableCell>Confirmado</TableCell>
+          <TableCell numeric={true} className="no-print">Celular</TableCell>
+          <TableCell className="no-print">Email</TableCell>
+          <TableCell className="no-print">Presenta Ponencia</TableCell>
+          <TableCell>Abonado</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -38,9 +39,9 @@ const ResultsTable = ({ results, classes, rowClickHandler, }: StyledProps) => (
               <TableCell numeric={true}>{n.documento}</TableCell>
               <TableCell>{n.apellido}</TableCell>
               <TableCell>{n.nombre}</TableCell>
-              <TableCell numeric={true}>{n.celular}</TableCell>
-              <TableCell>{n.email}</TableCell>
-              <TableCell>{n.ponencia_presenta ? 'Si' : 'No'}</TableCell>
+              <TableCell numeric={true} className="no-print">{n.celular}</TableCell>
+              <TableCell className="no-print">{n.email}</TableCell>
+              <TableCell className="no-print">{n.ponencia_presenta ? 'Si' : 'No'}</TableCell>
               <TableCell>{n.confirmado ? 'Si' : 'No'}</TableCell>
             </TableRow>
           )

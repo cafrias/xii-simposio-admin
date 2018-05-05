@@ -1,0 +1,6 @@
+@media print {
+  .list__paper {
+    box-shadow: none !important;
+    margin-top: 2.225rem;
+  }
+}

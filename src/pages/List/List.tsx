@@ -13,8 +13,10 @@ import SubsModal from './components/SubsModal'
 
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import Sync from '@material-ui/icons/Sync'
 import { CircularProgress } from 'material-ui/Progress'
+
+import Sync from '@material-ui/icons/Sync'
+import Print from '@material-ui/icons/Print'
 
 type ListType = 'all' | 'confirmed' | 'pending'
 
@@ -63,10 +65,14 @@ class List extends React.Component<Props, IState> {
         <Typography variant="headline" color="textSecondary" gutterBottom={true}>
           {this.getSubtitle(this.props.type)}
         </Typography>
-        <div className="list__controls">
+        <div className="list__controls no-print">
           <Button variant="raised" color="primary" onClick={this.handleRefresh}>
             Actualizar
             <Sync />
+          </Button>
+          <Button variant="raised" onClick={this.handlePrint}>
+            Imprimir
+            <Print />
           </Button>
         </div>
         {
@@ -89,6 +95,10 @@ class List extends React.Component<Props, IState> {
 
   public componentDidMount() {
     this.refresh()
+  }
+
+  private handlePrint() {
+    window.print()
   }
 
   private handleRefresh() {
