@@ -23,5 +23,5 @@ features:
             require-numbers: false
             require-symbols: false
             require-upper-case: false
-name: simposio-admin-dev
+name: xii-simposio-admin
 region: sa-east-1
