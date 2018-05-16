@@ -70,3 +70,18 @@ export const FixSubscripcion: ISubscripcion = {
   acompanantes: 0,
   confirmado: false,
 }
+
+export const humanizeArancelCategoria = (cat: string): [string, number] => {
+  switch (cat) {
+    case 'estudiante_untdf':
+      return ['Estudiante UNTDF', 0,]
+    case 'estudiante_otro':
+      return ['Estudiante otras instituciones', 350,]
+    case 'docente_untdf':
+      return ['Docente UNTDF', 1600,]
+    case 'matriculado_cpcetf':
+      return ['Matriculado CPCETF', 1000,]
+    default:
+      return ["General", 2700,]
+  }
+}

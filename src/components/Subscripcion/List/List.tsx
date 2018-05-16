@@ -26,6 +26,7 @@ const ResultsTable = ({ results, classes, rowClickHandler, }: StyledProps) => (
           <TableCell numeric={true}>Documento</TableCell>
           <TableCell>Apellido</TableCell>
           <TableCell>Nombre</TableCell>
+          <TableCell>Tipo</TableCell>
           <TableCell numeric={true} className="no-print">Celular</TableCell>
           <TableCell className="no-print">Email</TableCell>
           <TableCell className="no-print">Presenta Ponencia</TableCell>
@@ -39,6 +40,7 @@ const ResultsTable = ({ results, classes, rowClickHandler, }: StyledProps) => (
               <TableCell numeric={true}>{n.documento}</TableCell>
               <TableCell>{n.apellido}</TableCell>
               <TableCell>{n.nombre}</TableCell>
+              <TableCell>{SubsEnt.humanizeArancelCategoria(n.arancel_categoria)[0]}</TableCell>
               <TableCell numeric={true} className="no-print">{n.celular}</TableCell>
               <TableCell className="no-print">{n.email}</TableCell>
               <TableCell className="no-print">{n.ponencia_presenta ? 'Si' : 'No'}</TableCell>

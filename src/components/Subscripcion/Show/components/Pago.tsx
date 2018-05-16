@@ -14,21 +14,6 @@ interface IProps {
   confirm: (s: Subscripcion.ISubscripcion, conf: boolean) => Promise<void>,
 }
 
-const ArancelCategoria = (cat: string): [string, number] => {
-  switch (cat) {
-    case 'estudiante_untdf':
-      return ['Estudiante UNTDF', 0,]
-    case 'estudiante_otro':
-      return ['Estudiante otras instituciones', 350,]
-    case 'docente_untdf':
-      return ['Docente UNTDF', 1600,]
-    case 'matriculado_cpcetf':
-      return ['Matriculado CPCETF', 1000,]
-    default:
-      return ["general", 2700,]
-  }
-}
-
 const handleChange = (s: Subscripcion.ISubscripcion, confirm: (s: Subscripcion.ISubscripcion, conf: boolean) => Promise<void>) =>
   (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { checked, } = e.currentTarget
@@ -36,7 +21,7 @@ const handleChange = (s: Subscripcion.ISubscripcion, confirm: (s: Subscripcion.I
   }
 
 const Pago = ({ s, classes, confirm }: IProps) => {
-  const [categoria, base,] = ArancelCategoria(s.arancel_categoria)
+  const [categoria, base,] = Subscripcion.humanizeArancelCategoria(s.arancel_categoria)
   return (
     <>
       <Typography variant="headline">Pago</Typography>

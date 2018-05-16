@@ -9,10 +9,23 @@
 }
 
 @media print {
+  .container {
+    max-width: auto !important;
+  }
   .no-print {
     display: none !important;
   }
   .only-print {
     display: initial !important;
   }
+  table {
+    page-break-inside:auto !important;
+    page-break-after: always !important;
+  }
+  tr    { page-break-inside:avoid !important; page-break-after:auto !important; }
+  thead {
+    display: table-row-group !important;
+    padding: 0 !important;
+  }
+  tfoot { display:table-footer-group; }
 }
